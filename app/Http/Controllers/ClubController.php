@@ -36,8 +36,8 @@ class ClubController extends Controller
     public function create()
     {
         // if club is already registered then redirect to club home page with error message
-        if (Auth::user()->role === 'club') {
-            return redirect()->route('club.index')->with('error', __('You are already registered as a club'));
+        if (Auth::user()->club()->exists()) {
+            return redirect()->route('club.home')->with('error', __('You are already registered as a club'));
         } else {
             $affiliations = Affiliation::all();
             return view('club.details', compact('affiliations'));
@@ -74,7 +74,7 @@ class ClubController extends Controller
         ]);
 
         // redirect with success message after saving data
-        return redirect()->route('club.index')->with('success', __('Club registered successfully'));
+        return redirect()->route('club.home')->with('success', __('Club registered successfully'));
     }
 
     /**

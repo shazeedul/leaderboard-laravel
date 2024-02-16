@@ -34,6 +34,6 @@ class ClubRegistrationController extends Controller
             'role' => "club"
         ]);
         Auth::login($user);
-        return redirect()->route('home');
+        return redirect()->route('club.home');
     }
 }

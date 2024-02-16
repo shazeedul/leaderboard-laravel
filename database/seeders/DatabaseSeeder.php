@@ -17,10 +17,13 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        \App\Models\User::create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'phone_number' => '1234567890',
+            'password' => bcrypt('12345'),
+            'role' => 'admin',
+        ]);
         $this->call([
             BadgeSeeder::class,
             AffiliationSeeder::class,

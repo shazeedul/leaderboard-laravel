@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('leader_boards', function (Blueprint $table) {
+        Schema::create('leader_board_entries', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->timestamp('start_time');
-            $table->timestamp('close_time')->nullable();
-            $table->enum('status', ['open', 'closed'])->default('open');
+            $table->foreignId('leader_board_id')->constrained();
+            $table->foreignId('club_id')->constrained();
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('leader_boards');
+        Schema::dropIfExists('leader_board_entries');
     }
 };

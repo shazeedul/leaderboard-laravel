@@ -2,17 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Club;
 use App\Models\LeaderBoard;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\DataTables\AdminLeaderBoardDataTable;
 
 class LeaderBoardController extends Controller
 {
     /**
+     * Construct method
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(AdminLeaderBoardDataTable $dataTable)
     {
-        //
+        return $dataTable->render('admin.leaderboard.index');
     }
 
     /**
@@ -20,7 +31,8 @@ class LeaderBoardController extends Controller
      */
     public function create()
     {
-        //
+        $clubs = Club::all();
+        return view('admin.leaderboard.create', compact('clubs'));
     }
 
     /**
@@ -28,7 +40,16 @@ class LeaderBoardController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $leaderBoard = LeaderBoard::create([
+            'name' => $request->name,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+        ]);
+
+        $leaderBoard->clubs()->attach($request->clubs);
+        return redirect()->route('leaderboard.index');
+
+        return redirect()->route('admin.leaderboard.show', ['id' => $leaderBoard->id]);
     }
 
     /**

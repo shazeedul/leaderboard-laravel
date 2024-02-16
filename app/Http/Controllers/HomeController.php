@@ -24,9 +24,12 @@ class HomeController extends Controller
     public function index()
     {
         if (auth()->user()->role == 'admin') {
-            return view('admin.home');
+            $leaderBoardCount = \App\Models\LeaderBoard::count();
+            $clubCount = \App\Models\Club::count();
+            $memberCount = \App\Models\User::where('role', 'user')->count();
+            return view('admin.home', compact(['leaderBoardCount', 'clubCount', 'memberCount']));
         } else if (auth()->user()->role == 'club') {
-            return redirect()->route('club.index');
+            return redirect()->route('club.home');
         }
         return view('user.home');
     }
