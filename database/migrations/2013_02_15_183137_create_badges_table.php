@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('badges', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('currency')->nullable();
+            $table->float('price', 8, 2, true)->default(0);
             $table->text('description')->nullable();
             $table->timestamps();
         });

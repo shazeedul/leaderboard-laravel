@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('passport_date_of_issue')->nullable();
             $table->string('surname')->nullable();
             $table->date('date_of_birth')->nullable();
-            $table->string('country_of_origin')->nullable();
+            $table->unsignedBigInteger('country_id')->nullable();
             $table->string('nationality')->nullable();
             $table->enum('gender', ['Male', 'Female', 'Others'])->nullable();
             $table->enum('role', ['user', 'club', 'admin'])->default('user'); // admin, user

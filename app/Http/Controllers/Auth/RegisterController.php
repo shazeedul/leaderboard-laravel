@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use App\Models\Badge;
+use App\Models\Country;
 use App\Models\Affiliation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -51,7 +52,8 @@ class RegisterController extends Controller
     {
         $badges = Badge::all();
         $affiliations = Affiliation::all();
-        return view('auth.register', compact('badges', 'affiliations'));
+        $countries = Country::all();
+        return view('auth.register', compact('badges', 'affiliations', 'countries'));
     }
 
     /**
@@ -66,13 +68,14 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone_number' => ['required', 'string', 'max:255', 'unique:users'],
+            'phone_number' => ['required', 'string', 'max:255'],
+            'full_number' => ['required', 'string', 'max:255', 'unique:users,phone_number'],
             'password' => ['required', 'string', 'max:5', 'confirmed'],
             'badge_id' => ['required', 'integer', 'exists:badges,id'],
             'affiliation_id' => ['required', 'integer', 'exists:affiliations,id'],
             'club_status' => ['required', 'string', 'in:Coach,Player,Supporter'],
             'gender' => ['required', 'string',  'in:Male,Female,Others'],
-            'country_of_origin' => ['required', 'string', 'max:255'],
+            'country_of_origin' => ['required', 'integer', 'exists:countries,id'],
             'nationality' => ['required', 'string', 'max:255'],
         ]);
     }
@@ -89,13 +92,13 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'surname' => $data['surname'],
             'email' => $data['email'],
-            'phone_number' => $data['phone_number'],
+            'phone_number' => $data['full_number'],
             'password' => Hash::make($data['password']),
             'badge_id' => $data['badge_id'],
             'affiliation_id' => $data['affiliation_id'],
             'club_status' => $data['club_status'],
             'gender' => $data['gender'],
-            'country_of_origin' => $data['country_of_origin'],
+            'country_id' => $data['country_of_origin'],
             'nationality' => $data['nationality'],
         ]);
     }

@@ -1,18 +1,68 @@
 @extends('layouts.app')
+@push('styles')
+    <style>
+        input[type="radio"] {
+            -webkit-appearance: none;
+        }
+
+        label .badge {
+            border: 6px solid #3787ff;
+            margin: auto;
+            border-radius: 10px;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        input[name="badge_id"]:checked+label {
+            background-color: #3787ff;
+            box-shadow: 0 15px 45px #3787ff;
+            font-size: 12px;
+        }
+
+        .iti {
+            display: block !important;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.19/build/css/intlTelInput.css">
+@endpush
 
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Register') }}</div>
+                    <div class="card-header">{{ __('Create Individual Account') }}</div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('club.register') }}">
+                        <form method="POST" action="{{ route('register.post') }}">
                             @csrf
 
                             <div class="row mb-3">
-                                <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
+                                <label for="badge_id"
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Choose Your Preferred Membership') }}</label>
+
+                                <div class="col-md-6">
+                                    @foreach ($badges as $badge)
+                                        <input type="radio" name="badge_id" id="{{ $badge->name }}"
+                                            value="{{ $badge->id }}" {{ $loop->first ? 'checked' : '' }}>
+                                        <label for="{{ $badge->name }}" class="badge">
+                                            <i class="fa-solid fa-certificate"></i>
+                                            <span class="text-black">{{ $badge->name }} -
+                                                {{ $badge->currency }}{{ $badge->price }}</span>
+                                        </label>
+                                    @endforeach
+
+                                    @error('badge_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="name"
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="name" type="text"
@@ -63,7 +113,7 @@
 
                             <div class="row mb-3">
                                 <label for="phone_number"
-                                    class="col-md-4 col-form-label text-md-end">{{ __('Phone Number') }}</label>
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Mobile Number') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="phone_number" type="tel"
@@ -75,23 +125,7 @@
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <label for="badge_id"
-                                    class="col-md-4 col-form-label text-md-end">{{ __('Badge') }}</label>
-
-                                <div class="col-md-6">
-                                    <select id="badge_id" class="form-select @error('badge_id') is-invalid @enderror"
-                                        name="badge_id" required>
-                                        <option value="">Select a Badge</option>
-                                        @foreach ($badges as $badge)
-                                            <option value="{{ $badge->id }}">{{ $badge->name }}</option>
-                                        @endforeach
-                                    </select>
-
-                                    @error('badge_id')
+                                    @error('full_number')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -109,7 +143,7 @@
                                         <option value="">Select Your Club Status</option>
                                         <option value="Coach">Coach</option>
                                         <option value="Player">Player</option>
-                                        <option value="Support">Support</option>
+                                        <option value="Supporter">Fan/Supporter</option>
                                     </select>
 
                                     @error('club_status')
@@ -186,10 +220,16 @@
                                     class="col-md-4 col-form-label text-md-end">{{ __('Country of Origin') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="country_of_origin" type="text"
+                                    {{-- <input id="country_of_origin" type="text"
                                         class="form-control @error('country_of_origin') is-invalid @enderror"
                                         name="country_of_origin" value="{{ old('country_of_origin') }}" required
-                                        autocomplete="country_of_origin" autofocus>
+                                        autocomplete="country_of_origin" autofocus> --}}
+
+                                    <select id="country_of_origin"
+                                        class="form-select @error('country_of_origin') is-invalid @enderror"
+                                        name="country_of_origin" required>
+                                        <option value=""></option>
+                                    </select>
 
                                     @error('country_of_origin')
                                         <span class="invalid-feedback" role="alert">
@@ -205,9 +245,8 @@
 
                                 <div class="col-md-6">
                                     <input id="nationality" type="text"
-                                        class="form-control @error('nationality') is-invalid @enderror"
-                                        name="nationality" value="{{ old('nationality') }}" required
-                                        autocomplete="nationality" autofocus>
+                                        class="form-control @error('nationality') is-invalid @enderror" name="nationality"
+                                        value="{{ old('nationality') }}" required autocomplete="nationality" autofocus>
 
                                     @error('nationality')
                                         <span class="invalid-feedback" role="alert">
@@ -252,7 +291,7 @@
 
                                     @if (Route::has('club.register'))
                                         <a class="btn btn-link" href="{{ route('club.register') }}">
-                                            {{ __('Register as Club/Team Member?') }}
+                                            {{ __('Register as Club/Academy/Association?') }}
                                         </a>
                                     @endif
                                 </div>
@@ -264,3 +303,63 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#password').attr('maxlength', 5);
+            $('#password-confirm').attr('maxlength', 5);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.19/build/js/intlTelInput.min.js"></script>
+    <script>
+        const input = document.querySelector("#phone_number");
+        window.intlTelInput(input, {
+            initialCountry: "us",
+            hiddenInput: () => "full_number",
+            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.19/build/js/utils.js",
+        });
+    </script>
+    <script>
+        // select2 search country select by route search.country
+        $(document).ready(function() {
+            $('#country_of_origin').select2({
+                placeholder: 'Select Your Country of Origin',
+                allowClear: true,
+                minimumInputLength: 3,
+                ajax: {
+                    url: '{{ route('search.country') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function(data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                templateResult: function(data) {
+                    if (!data.id) {
+                        // If no id is provided, we assume it's a placeholder option
+                        return data.text;
+                    }
+                    // Format the data for display with flag and name
+                    var $result = $('<span><img src="' + (data.flag ? data.flag :
+                            'https://ui-avatars.com/api/?name=' + data.name +
+                            '&color=7F9CF5&background=EBF4FF') +
+                        '" style="width: 20px; height: 20px; margin-right: 5px;">' + data.name +
+                        '</span>');
+                    return $result;
+                },
+                escapeMarkup: function(markup) {
+                    return markup;
+                },
+                templateSelection: function(data) {
+                    if (!data.id) {
+                        return data.text;
+                    }
+                    return data.name;
+                }
+            });
+        });
+    </script>
+@endpush

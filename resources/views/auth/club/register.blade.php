@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Club/Team Register') }}</div>
+                    <div class="card-header">{{ __('Create Club Account') }}</div>
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('club.register.post') }}">
@@ -63,7 +63,7 @@
 
                             <div class="row mb-3">
                                 <label for="phone_number"
-                                    class="col-md-4 col-form-label text-md-end">{{ __('Phone Number') }}</label>
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Mobile Number') }}</label>
 
                                 <div class="col-md-6">
                                     <input id="phone_number" type="tel"
@@ -199,3 +199,11 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#password').attr('maxlength', 5);
+            $('#password-confirm').attr('maxlength', 5);
+        });
+    </script>
+@endpush

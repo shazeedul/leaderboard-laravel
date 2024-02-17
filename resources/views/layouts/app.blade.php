@@ -18,6 +18,9 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/font-awesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/font-awesome/css/all.min.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     @stack('styles')
 </head>
 
@@ -84,9 +87,10 @@
             @yield('content')
         </main>
     </div>
-    {{-- <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script> --}}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> --}}
     <script src="https://cdn.datatables.net/2.0.0/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @stack('scripts')
 </body>
 

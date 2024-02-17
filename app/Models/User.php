@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Club;
 use App\Models\Badge;
+use App\Models\Country;
 use App\Models\Affiliation;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -29,7 +30,7 @@ class User extends Authenticatable
         'passport_date_of_issue',
         'surname',
         'date_of_birth',
-        'country_of_origin',
+        'country_id',
         'nationality',
         'gender',
         'password',
@@ -72,6 +73,11 @@ class User extends Authenticatable
     public function club()
     {
         return $this->hasOne(Club::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 
     public function isClub()
