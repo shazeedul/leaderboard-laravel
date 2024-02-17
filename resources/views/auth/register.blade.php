@@ -22,6 +22,28 @@
         .iti {
             display: block !important;
         }
+
+        .password,
+        .password__confirmation {
+            display: flex;
+        }
+
+        .password__input,
+        .password__confirmation__input {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            text-align: center;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .password__input:last-child,
+        .password__confirmation__input:last-child {
+            margin-right: 0;
+        }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@19.2.19/build/css/intlTelInput.css">
 @endpush
@@ -220,11 +242,6 @@
                                     class="col-md-4 col-form-label text-md-end">{{ __('Country of Origin') }}</label>
 
                                 <div class="col-md-6">
-                                    {{-- <input id="country_of_origin" type="text"
-                                        class="form-control @error('country_of_origin') is-invalid @enderror"
-                                        name="country_of_origin" value="{{ old('country_of_origin') }}" required
-                                        autocomplete="country_of_origin" autofocus> --}}
-
                                     <select id="country_of_origin"
                                         class="form-select @error('country_of_origin') is-invalid @enderror"
                                         name="country_of_origin" required>
@@ -257,13 +274,57 @@
                             </div>
 
                             <div class="row mb-3">
+                                <label for="passport_number"
+                                    class="col-md-4 col-form-label text-md-end">{{ __('ID/Passport number') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="passport_number" type="text"
+                                        class="form-control @error('passport_number') is-invalid @enderror"
+                                        name="passport_number" value="{{ old('passport_number') }}" required
+                                        autocomplete="passport_number" autofocus>
+
+                                    @error('passport_number')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="passport_date_of_issue"
+                                    class="col-md-4 col-form-label text-md-end">{{ __('ID/passport date of issue') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="passport_date_of_issue" type="date"
+                                        class="form-control @error('passport_date_of_issue') is-invalid @enderror"
+                                        name="passport_date_of_issue" value="{{ old('passport_date_of_issue') }}"
+                                        required autocomplete="passport_date_of_issue">
+
+                                    @error('passport_date_of_issue')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <label for="password"
                                     class="col-md-4 col-form-label text-md-end">{{ __('Passcode') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="password" type="password"
+                                    {{-- <input id="password" type="password"
                                         class="form-control @error('password') is-invalid @enderror" name="password"
-                                        required autocomplete="new-password">
+                                        required autocomplete="new-password"> --}}
+                                    <div class="password">
+                                        <input type="text" class="password__input" maxlength="1" />
+                                        <input type="text" class="password__input" maxlength="1" />
+                                        <input type="text" class="password__input" maxlength="1" />
+                                        <input type="text" class="password__input" maxlength="1" />
+                                        <input type="text" class="password__input" maxlength="1" />
+                                        <input type="hidden" id="password" name="password">
+                                    </div>
 
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
@@ -278,8 +339,16 @@
                                     class="col-md-4 col-form-label text-md-end">{{ __('Confirm Passcode') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="password-confirm" type="password" class="form-control"
-                                        name="password_confirmation" required autocomplete="new-password">
+                                    {{-- <input id="password-confirm" type="password" class="form-control"
+                                        name="password_confirmation" required autocomplete="new-password"> --}}
+                                    <div class="password__confirmation">
+                                        <input type="text" class="password__confirmation__input" maxlength="1" />
+                                        <input type="text" class="password__confirmation__input" maxlength="1" />
+                                        <input type="text" class="password__confirmation__input" maxlength="1" />
+                                        <input type="text" class="password__confirmation__input" maxlength="1" />
+                                        <input type="text" class="password__confirmation__input" maxlength="1" />
+                                        <input type="hidden" id="password_confirmation" name="password_confirmation">
+                                    </div>
                                 </div>
                             </div>
 
@@ -359,6 +428,66 @@
                     }
                     return data.name;
                 }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const passwordInputs = document.querySelectorAll('.password__input');
+            const passwordConfirmationInputs = document.querySelectorAll('.password__confirmation__input');
+            const fullPasswordInput = document.getElementById('password');
+            const fullPasswordConfirmationInput = document.getElementById('password_confirmation');
+
+            function focusNextInput(inputs, currentIndex) {
+                const nextIndex = currentIndex + 1;
+                if (nextIndex < inputs.length) {
+                    inputs[nextIndex].focus();
+                }
+            }
+
+            function focusPreviousInput(inputs, currentIndex) {
+                const prevIndex = currentIndex - 1;
+                if (prevIndex >= 0) {
+                    inputs[prevIndex].focus();
+                }
+            }
+
+            function updateFullPassword(inputs, fullPasswordInput) {
+                let fullPassword = '';
+                inputs.forEach((input) => {
+                    fullPassword += input.value;
+                });
+                fullPasswordInput.value = fullPassword;
+            }
+
+            passwordInputs.forEach((input, index) => {
+                input.addEventListener('input', () => {
+                    if (input.value.length >= input.maxLength) {
+                        focusNextInput(passwordInputs, index);
+                    }
+                    updateFullPassword(passwordInputs, fullPasswordInput);
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && input.value.length === 0) {
+                        focusPreviousInput(passwordInputs, index);
+                    }
+                });
+            });
+
+            passwordConfirmationInputs.forEach((input, index) => {
+                input.addEventListener('input', () => {
+                    if (input.value.length >= input.maxLength) {
+                        focusNextInput(passwordConfirmationInputs, index);
+                    }
+                    updateFullPassword(passwordConfirmationInputs, fullPasswordConfirmationInput);
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && input.value.length === 0) {
+                        focusPreviousInput(passwordConfirmationInputs, index);
+                    }
+                });
             });
         });
     </script>

@@ -77,6 +77,8 @@ class RegisterController extends Controller
             'gender' => ['required', 'string',  'in:Male,Female,Others'],
             'country_of_origin' => ['required', 'integer', 'exists:countries,id'],
             'nationality' => ['required', 'string', 'max:255'],
+            'passport_number' => ['required', 'string', 'max:255'],
+            'passport_date_of_issue' => ['required', 'date'],
         ]);
     }
 
@@ -88,6 +90,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        dd($data);
         return User::create([
             'name' => $data['name'],
             'surname' => $data['surname'],
@@ -100,6 +103,8 @@ class RegisterController extends Controller
             'gender' => $data['gender'],
             'country_id' => $data['country_of_origin'],
             'nationality' => $data['nationality'],
+            'passport_number' => $data['passport_number'],
+            'passport_date_of_issue' => $data['passport_date_of_issue'],
         ]);
     }
 }
